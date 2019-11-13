@@ -26,7 +26,7 @@
     }
 
     .wrap {
-      width: 600px;
+      width: 50vw;
       display: flex;
       flex-wrap: wrap;
       margin: -1rem;
@@ -51,7 +51,7 @@
 <body>
   <div class="wrap">
     <div class="box">
-      <h1 data-match-item="h">A really very long heading that will break the line</h1>
+      <h1 data-match-item="h" style="height: 600px">A really very long heading that will break the line</h1>
       <p data-match-item="p">A really short p tag</p>
       <div class="button">Button</div>
     </div>
@@ -75,7 +75,7 @@
   <script src="vanilla-match-height.js"></script>
   <script>
     let equalHeight = new VanillaMatchHeight();
-    equalHeight.apply();
+    equalHeight.init();
   </script>
 </body>
 </html>

@@ -1,13 +1,31 @@
 class VanillaMatchHeight {
 	// Apply init
-	apply() {
-		window.addEventListener('DOMContentLoaded', (event) => {
-			let rows = this.walkPage();
+	init() {
+		window.addEventListener('DOMContentLoaded', () => {
+			this.resize();
 
-			if (!rows) return;
-
-			this.walkRows(rows);
+			window.addEventListener('resize', () => {
+				console.log('resize');
+				this.resize();
+			});
 		});
+	}
+
+	// Resize
+	resize() {
+		let rows = this.walkPage();
+
+		if (!rows) return;
+
+		this.walkRows(rows);
+	}
+
+	reset() {
+		let elements = document.querySelectorAll('[data-match-item]');
+
+		for (let i = 0; i < elements.length; i++) {
+			elements[i].style.removeProperty('height');
+		}
 	}
 
 	// Walk page
@@ -20,6 +38,8 @@ class VanillaMatchHeight {
 
 		for (let i = 0; i < items.length; i++) {
 			let item = items[i];
+
+			item.style.removeProperty('height');
 
 			if (item.parentNode === buffer) continue;
 
