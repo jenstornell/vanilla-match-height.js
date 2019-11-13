@@ -21,7 +21,7 @@ class VanillaMatchHeight {
 	}
 
 	reset() {
-		let elements = document.querySelectorAll('[data-match-item]');
+		let elements = this.getElements();
 
 		for (let i = 0; i < elements.length; i++) {
 			elements[i].style.removeProperty('height');
@@ -30,25 +30,25 @@ class VanillaMatchHeight {
 
 	// Walk page
 	walkPage() {
-		let items = document.querySelectorAll('[data-match-item]');
+		this.elements = this.getElements();
 		let rows = {};
 		let buffer = null;
 
-		if (!items.length) return;
+		if (!this.elements.length) return;
 
-		for (let i = 0; i < items.length; i++) {
-			let item = items[i];
+		for (let i = 0; i < this.elements.length; i++) {
+			let element = this.elements[i];
 
-			item.style.removeProperty('height');
+			element.style.removeProperty('height');
 
-			if (item.parentNode === buffer) continue;
+			if (element.parentNode === buffer) continue;
 
-			let top = this.getTop(item.parentElement);
+			let top = this.getTop(element.parentElement);
 
 			rows[top] = rows[top] !== undefined ? rows[top] : [];
-			rows[top][i] = item.parentNode;
+			rows[top][i] = element.parentNode;
 
-			buffer = item.parentNode;
+			buffer = element.parentNode;
 		}
 
 		return rows;
@@ -67,22 +67,20 @@ class VanillaMatchHeight {
 	walkGroups(row) {
 		let heights = {};
 
-		row.forEach((group) => {
-			heights = this.walkItems(group, heights);
+		row.forEach(() => {
+			heights = this.walkItems(heights);
 		});
 
 		return heights;
 	}
 
 	// Walk items
-	walkItems(group, heights) {
-		let items = group.querySelectorAll('[data-match-item]');
-
-		items.forEach((item) => {
-			let attribute = item.getAttribute('data-match-item');
+	walkItems(heights) {
+		this.elements.forEach((element) => {
+			let attribute = element.getAttribute('data-match-item');
 
 			if (attribute) {
-				let height = this.getHeight(item);
+				let height = this.getHeight(element);
 
 				if (heights[attribute] < height || heights[attribute] === undefined) {
 					heights[attribute] = height;
@@ -95,20 +93,24 @@ class VanillaMatchHeight {
 
 	// Set heights
 	setHeights(row, heights) {
-		row.forEach((group) => {
-			let items = group.querySelectorAll('[data-match-item]');
-
-			items.forEach((item) => {
-				let attribute = item.getAttribute('data-match-item');
+		row.forEach(() => {
+			this.elements.forEach((element) => {
+				let attribute = element.getAttribute('data-match-item');
 				let height = heights[attribute];
 
 				if (attribute) {
-					item.style.height = height + 'px';
+					element.style.height = height + 'px';
 				}
 			});
 		});
 	}
 
+	// Get elements
+	getElements() {
+		return document.querySelectorAll('[data-match-item]');
+	}
+
+	// Get height
 	getHeight(element) {
 		return parseInt(getComputedStyle(element).getPropertyValue('height'));
 	}
